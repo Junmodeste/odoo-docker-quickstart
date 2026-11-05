@@ -1,4 +1,4 @@
-# Raccourcis pour la stack Odoo 19. Variables : DB (base), MODULE (module à mettre à jour).
+# Raccourcis pour la stack Odoo (version : ODOO_VERSION dans .env). Variables : DB (base), MODULE (module à mettre à jour).
 DB ?= odoo
 COMPOSE = docker compose
 

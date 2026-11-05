@@ -1,13 +1,13 @@
 # Odoo Docker Quickstart
 
-[![Odoo 19](https://img.shields.io/badge/Odoo-19.0-714B67)](https://www.odoo.com)
+[![Odoo 17 | 18 | 19](https://img.shields.io/badge/Odoo-17.0%20%7C%2018.0%20%7C%2019.0-714B67)](https://www.odoo.com)
 [![License: LGPL-3](https://img.shields.io/badge/License-LGPL--3-blue.svg)](LICENSE)
 
 🇫🇷 [Français](#français) · 🇬🇧 [English](#english)
 
 ## Français
 
-Un `docker-compose.yml` prêt à l'emploi pour lancer Odoo 19 et PostgreSQL 16 en une commande, avec volumes persistants.
+Un `docker-compose.yml` prêt à l'emploi pour lancer Odoo 17, 18 ou 19 et PostgreSQL 16 en une commande, avec volumes persistants.
 Déposez vos modules dans `addons/`, réglez Odoo dans `config/odoo.conf` et pilotez la stack avec le `Makefile`.
 
 ### Prérequis
@@ -18,7 +18,7 @@ Déposez vos modules dans `addons/`, réglez Odoo dans `config/odoo.conf` et pil
 ### Installation
 
 1. `git clone https://github.com/Junmodeste/odoo-docker-quickstart.git && cd odoo-docker-quickstart`
-2. `cp .env.example .env` puis changez `POSTGRES_PASSWORD`.
+2. `cp .env.example .env` puis changez `POSTGRES_PASSWORD` (et `ODOO_VERSION` si besoin : 17, 18 ou 19).
 3. `make up` (ou `docker compose up -d`) et ouvrez http://localhost:8069.
 
 ### Commandes
@@ -43,9 +43,11 @@ Volumes : `db-data` (base PostgreSQL) et `odoo-data` (filestore, sessions). `doc
 
 Avant toute mise en ligne, définissez `admin_passwd` dans `config/odoo.conf` et placez Odoo derrière un proxy HTTPS.
 
-### Version supportée
+### Versions supportées
 
-Odoo **19.0** (image officielle `odoo:19`) avec PostgreSQL 16.
+Odoo **17.0**, **18.0** et **19.0** (images officielles `odoo:17`, `odoo:18`, `odoo:19`) avec PostgreSQL 16. Choisissez la version avec `ODOO_VERSION` dans `.env` (19 par défaut).
+
+Une base créée avec une version ne s'ouvre pas avec une autre. Pour changer de version sans perdre vos données, lancez la nouvelle version dans un projet séparé (volumes distincts) : `COMPOSE_PROJECT_NAME=odoo17 ODOO_VERSION=17 docker compose up -d`.
 
 ### Licence
 
@@ -57,7 +59,7 @@ Koffi Modeste Junior — [@Junmodeste](https://github.com/Junmodeste)
 
 ## English
 
-A ready-to-use `docker-compose.yml` that starts Odoo 19 and PostgreSQL 16 with one command, with persistent volumes.
+A ready-to-use `docker-compose.yml` that starts Odoo 17, 18 or 19 and PostgreSQL 16 with one command, with persistent volumes.
 Put your modules in `addons/`, tune Odoo in `config/odoo.conf` and drive the stack with the `Makefile`.
 
 ### Requirements
@@ -68,7 +70,7 @@ Put your modules in `addons/`, tune Odoo in `config/odoo.conf` and drive the sta
 ### Installation
 
 1. `git clone https://github.com/Junmodeste/odoo-docker-quickstart.git && cd odoo-docker-quickstart`
-2. `cp .env.example .env` and change `POSTGRES_PASSWORD`.
+2. `cp .env.example .env` and change `POSTGRES_PASSWORD` (and `ODOO_VERSION` if needed: 17, 18 or 19).
 3. `make up` (or `docker compose up -d`) and open http://localhost:8069.
 
 ### Commands
@@ -85,9 +87,11 @@ Volumes: `db-data` (PostgreSQL) and `odoo-data` (filestore, sessions). `docker c
 
 Before going live, set `admin_passwd` in `config/odoo.conf` and put Odoo behind an HTTPS proxy.
 
-### Supported version
+### Supported versions
 
-Odoo **19.0** (official `odoo:19` image) with PostgreSQL 16.
+Odoo **17.0**, **18.0** and **19.0** (official `odoo:17`, `odoo:18`, `odoo:19` images) with PostgreSQL 16. Pick the version with `ODOO_VERSION` in `.env` (19 by default).
+
+A database created with one version does not open with another. To switch versions without losing data, run the new version as a separate project (separate volumes): `COMPOSE_PROJECT_NAME=odoo17 ODOO_VERSION=17 docker compose up -d`.
 
 ### License
 
