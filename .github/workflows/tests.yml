@@ -1,0 +1,35 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  compose:
+    # Real check: the stack must start and answer /web/health on each supported Odoo version.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        odoo-version: ["17", "18", "19"]
+    env:
+      ODOO_VERSION: ${{ matrix.odoo-version }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: cp .env.example .env
+      - run: docker compose config --quiet
+      - run: docker compose up -d --wait db
+      - name: Initialise a database
+        run: docker compose run --rm odoo odoo -d qs -i base --stop-after-init --no-http
+      - run: docker compose up -d odoo
+      - name: Wait for /web/health
+        run: |
+          for i in $(seq 1 60); do
+            curl -fsS http://localhost:8069/web/health && exit 0
+            sleep 2
+          done
+          docker compose logs odoo
+          exit 1
+      - if: always()
+        run: docker compose down -v
