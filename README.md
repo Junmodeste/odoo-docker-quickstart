@@ -1,5 +1,6 @@
 # Odoo Docker Quickstart
 
+[![tests](https://github.com/Junmodeste/odoo-docker-quickstart/actions/workflows/tests.yml/badge.svg)](https://github.com/Junmodeste/odoo-docker-quickstart/actions/workflows/tests.yml)
 [![Odoo 17 | 18 | 19](https://img.shields.io/badge/Odoo-17.0%20%7C%2018.0%20%7C%2019.0-714B67)](https://www.odoo.com)
 [![License: LGPL-3](https://img.shields.io/badge/License-LGPL--3-blue.svg)](LICENSE)
 
