@@ -45,12 +45,26 @@ make test-fresh MODULE=quickstart_example
 
 Odoo crée lui-même une base absente passée avec `-d` : `make test` fonctionne aussi sur une base qui n'existe pas encore.
 
+### Dépendances Python (image personnalisée, facultatif)
+
+Si vos modules ont besoin de paquets Python absents de l'image officielle (`external_dependencies` du manifeste), listez-les dans `requirements.txt` puis activez l'image personnalisée : `Dockerfile` part de `odoo:<ODOO_VERSION>` et installe ces paquets, `docker-compose.build.yml` remplace l'image du service `odoo`.
+
+```bash
+echo "humanize==4.9.0" >> requirements.txt
+docker compose -f docker-compose.yml -f docker-compose.build.yml up -d
+```
+
+Pour que `make` et `docker compose` l'utilisent toujours, décommentez la ligne `COMPOSE_FILE=…` de votre système dans `.env`. L'image est reconstruite à chaque `up` (`pull_policy: build`, cache Docker), donc une modification de `requirements.txt` est prise en compte sans autre commande. Sur Odoo 18 et 19 (Ubuntu 24.04), l'installation passe outre la protection PEP 668 du Python système : n'épinglez pas à d'autres versions les paquets déjà fournis par l'image (`lxml`, `psycopg2`…). La CI construit cette image et importe un paquet ajouté sur les trois versions.
+
 ### Structure
 
 ```
-addons/            vos modules (monté sur /mnt/extra-addons), dont quickstart_example
-config/odoo.conf   configuration Odoo (montée sur /etc/odoo)
-.env.example       identifiants PostgreSQL et port à copier vers .env
+addons/                   vos modules (monté sur /mnt/extra-addons), dont quickstart_example
+config/odoo.conf          configuration Odoo (montée sur /etc/odoo)
+.env.example              identifiants PostgreSQL et port à copier vers .env
+Dockerfile                image personnalisée facultative (odoo:<version> + requirements.txt)
+docker-compose.build.yml  surcharge qui active cette image
+requirements.txt          paquets Python de vos modules (image personnalisée seulement)
 ```
 
 Volumes : `db-data` (base PostgreSQL) et `odoo-data` (filestore, sessions). `docker compose down -v` les supprime.
@@ -109,6 +123,17 @@ make test-fresh MODULE=quickstart_example
 ```
 
 Odoo creates a missing database passed with `-d` by itself: `make test` also works on a database that does not exist yet.
+
+### Python dependencies (custom image, optional)
+
+If your modules need Python packages missing from the official image (manifest `external_dependencies`), list them in `requirements.txt` and enable the custom image: `Dockerfile` starts from `odoo:<ODOO_VERSION>` and installs them, `docker-compose.build.yml` swaps the image of the `odoo` service.
+
+```bash
+echo "humanize==4.9.0" >> requirements.txt
+docker compose -f docker-compose.yml -f docker-compose.build.yml up -d
+```
+
+To make `make` and `docker compose` always use it, uncomment the `COMPOSE_FILE=…` line for your OS in `.env`. The image is rebuilt on every `up` (`pull_policy: build`, Docker cache), so a change to `requirements.txt` is picked up with no extra command. On Odoo 18 and 19 (Ubuntu 24.04) the install overrides the PEP 668 protection of the system Python: do not pin packages already shipped by the image (`lxml`, `psycopg2`…) to other versions. CI builds this image and imports an added package on all three versions.
 
 Volumes: `db-data` (PostgreSQL) and `odoo-data` (filestore, sessions). `docker compose down -v` deletes them.
 

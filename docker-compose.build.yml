@@ -1,0 +1,10 @@
+# Optional override: builds a local image from Dockerfile (odoo:<version> + requirements.txt).
+# Usage: docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
+services:
+  odoo:
+    image: odoo-quickstart:${ODOO_VERSION:-19}
+    pull_policy: build
+    build:
+      context: .
+      args:
+        ODOO_VERSION: ${ODOO_VERSION:-19}

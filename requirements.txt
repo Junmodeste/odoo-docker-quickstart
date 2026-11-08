@@ -1,0 +1,3 @@
+# Python packages needed by your addons, one per line (pip format), e.g. humanize==4.9.0
+# Only used by the optional image (Dockerfile + docker-compose.build.yml).
+# Do not pin packages already shipped by the Odoo image (psycopg2, lxml, ...) to other versions.
