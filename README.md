@@ -31,11 +31,22 @@ Déposez vos modules dans `addons/`, réglez Odoo dans `config/odoo.conf` et pil
 | `make logs` | Suit les logs d'Odoo |
 | `make shell DB=odoo` | Shell Python Odoo sur la base `odoo` |
 | `make update-module MODULE=mon_module DB=odoo` | Met à jour un module |
+| `make test MODULE=mon_module DB=test` | Installe ou met à jour un module et lance ses tests (`--test-tags=/mon_module`) ; utilisez une base de test |
+
+### Module d'exemple
+
+`addons/quickstart_example/` est un module minimal (un modèle, un champ calculé, des droits d'accès, deux tests) qui s'installe tel quel sur Odoo 17, 18 et 19 : la version du manifeste (`1.0.0`) ne porte pas de préfixe, Odoo y ajoute la sienne. Copiez-le comme point de départ ou supprimez-le. La CI l'installe et le teste sur les trois versions avec `make test` puis `make update-module`.
+
+```bash
+make up
+docker compose exec odoo odoo -d test -i base --stop-after-init --no-http
+make test MODULE=quickstart_example DB=test
+```
 
 ### Structure
 
 ```
-addons/            vos modules (monté sur /mnt/extra-addons)
+addons/            vos modules (monté sur /mnt/extra-addons), dont quickstart_example
 config/odoo.conf   configuration Odoo (montée sur /etc/odoo)
 .env.example       identifiants PostgreSQL et port à copier vers .env
 ```
@@ -83,6 +94,17 @@ Put your modules in `addons/`, tune Odoo in `config/odoo.conf` and drive the sta
 | `make logs` | Follow Odoo logs |
 | `make shell DB=odoo` | Odoo Python shell on database `odoo` |
 | `make update-module MODULE=my_module DB=odoo` | Update a module |
+| `make test MODULE=my_module DB=test` | Install or update a module and run its tests (`--test-tags=/my_module`); use a test database |
+
+### Example module
+
+`addons/quickstart_example/` is a minimal module (one model, one computed field, access rights, two tests) that installs as is on Odoo 17, 18 and 19: its manifest version (`1.0.0`) has no series prefix, so Odoo prepends its own. Copy it as a starting point or delete it. CI installs and tests it on all three versions with `make test` then `make update-module`.
+
+```bash
+make up
+docker compose exec odoo odoo -d test -i base --stop-after-init --no-http
+make test MODULE=quickstart_example DB=test
+```
 
 Volumes: `db-data` (PostgreSQL) and `odoo-data` (filestore, sessions). `docker compose down -v` deletes them.
 

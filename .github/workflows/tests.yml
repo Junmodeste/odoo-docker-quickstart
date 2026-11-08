@@ -31,5 +31,11 @@ jobs:
           done
           docker compose logs odoo
           exit 1
+      - name: Test the example module from addons/ (make test)
+        run: |
+          make test MODULE=quickstart_example DB=qs 2>&1 | tee test.log
+          grep -E "0 failed, 0 error\(s\) of [1-9][0-9]* tests" test.log
+      - name: Update the example module (make update-module)
+        run: make update-module MODULE=quickstart_example DB=qs
       - if: always()
         run: docker compose down -v
