@@ -37,5 +37,11 @@ jobs:
           grep -E "0 failed, 0 error\(s\) of [1-9][0-9]* tests" test.log
       - name: Update the example module (make update-module)
         run: make update-module MODULE=quickstart_example DB=qs
+      - name: Test the example module on a throwaway database (make test-fresh)
+        run: |
+          make test-fresh MODULE=quickstart_example 2>&1 | tee fresh.log
+          grep -E "0 failed, 0 error\(s\) of [1-9][0-9]* tests" fresh.log
+          # The database must be gone once the tests pass.
+          test "$(docker compose exec -T db psql -U odoo -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname = 'test_quickstart_example'")" = 0
       - if: always()
         run: docker compose down -v

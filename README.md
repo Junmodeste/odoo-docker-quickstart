@@ -32,16 +32,18 @@ Déposez vos modules dans `addons/`, réglez Odoo dans `config/odoo.conf` et pil
 | `make shell DB=odoo` | Shell Python Odoo sur la base `odoo` |
 | `make update-module MODULE=mon_module DB=odoo` | Met à jour un module |
 | `make test MODULE=mon_module DB=test` | Installe ou met à jour un module et lance ses tests (`--test-tags=/mon_module`) ; utilisez une base de test |
+| `make test-fresh MODULE=mon_module` | Lance les tests du module sur une base neuve `test_mon_module` (créée par Odoo, supprimée avec son filestore si les tests passent, gardée pour analyse sinon) ; autre nom : `TEST_DB=…` |
 
 ### Module d'exemple
 
-`addons/quickstart_example/` est un module minimal (un modèle, un champ calculé, des droits d'accès, deux tests) qui s'installe tel quel sur Odoo 17, 18 et 19 : la version du manifeste (`1.0.0`) ne porte pas de préfixe, Odoo y ajoute la sienne. Copiez-le comme point de départ ou supprimez-le. La CI l'installe et le teste sur les trois versions avec `make test` puis `make update-module`.
+`addons/quickstart_example/` est un module minimal (un modèle, un champ calculé, des droits d'accès, deux tests) qui s'installe tel quel sur Odoo 17, 18 et 19 : la version du manifeste (`1.0.0`) ne porte pas de préfixe, Odoo y ajoute la sienne. Copiez-le comme point de départ ou supprimez-le. La CI l'installe et le teste sur les trois versions avec `make test`, `make update-module` puis `make test-fresh`.
 
 ```bash
 make up
-docker compose exec odoo odoo -d test -i base --stop-after-init --no-http
-make test MODULE=quickstart_example DB=test
+make test-fresh MODULE=quickstart_example
 ```
+
+Odoo crée lui-même une base absente passée avec `-d` : `make test` fonctionne aussi sur une base qui n'existe pas encore.
 
 ### Structure
 
@@ -95,16 +97,18 @@ Put your modules in `addons/`, tune Odoo in `config/odoo.conf` and drive the sta
 | `make shell DB=odoo` | Odoo Python shell on database `odoo` |
 | `make update-module MODULE=my_module DB=odoo` | Update a module |
 | `make test MODULE=my_module DB=test` | Install or update a module and run its tests (`--test-tags=/my_module`); use a test database |
+| `make test-fresh MODULE=my_module` | Run the module's tests on a brand-new `test_my_module` database (created by Odoo, dropped with its filestore when the tests pass, kept for inspection otherwise); other name: `TEST_DB=…` |
 
 ### Example module
 
-`addons/quickstart_example/` is a minimal module (one model, one computed field, access rights, two tests) that installs as is on Odoo 17, 18 and 19: its manifest version (`1.0.0`) has no series prefix, so Odoo prepends its own. Copy it as a starting point or delete it. CI installs and tests it on all three versions with `make test` then `make update-module`.
+`addons/quickstart_example/` is a minimal module (one model, one computed field, access rights, two tests) that installs as is on Odoo 17, 18 and 19: its manifest version (`1.0.0`) has no series prefix, so Odoo prepends its own. Copy it as a starting point or delete it. CI installs and tests it on all three versions with `make test`, `make update-module` then `make test-fresh`.
 
 ```bash
 make up
-docker compose exec odoo odoo -d test -i base --stop-after-init --no-http
-make test MODULE=quickstart_example DB=test
+make test-fresh MODULE=quickstart_example
 ```
+
+Odoo creates a missing database passed with `-d` by itself: `make test` also works on a database that does not exist yet.
 
 Volumes: `db-data` (PostgreSQL) and `odoo-data` (filestore, sessions). `docker compose down -v` deletes them.
 
